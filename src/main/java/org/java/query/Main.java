@@ -38,11 +38,38 @@ public class Main {
 				int region_id = rs.getInt("region_id");
 				String country_code2 = rs.getString("country_code2");
 				
-				System.out.println("name: " + name + "\n");
+				System.out.println("name: " + name);
 				System.out.println("region id: " + region_id);
 				System.out.println("country: " + country_id);
 				System.out.println("country code: " + country_code2);
-
+				
+				System.out.println("\n------------------------------\n");
+			}
+			
+			System.out.println("digit an id: ");
+			int idSearch = Integer.valueOf(sc.nextLine());	
+			
+			String query2 = " select distinct c.name, l.`language` \r\n "
+					+ " from country_languages cl \r\n "
+					+ " join languages l on cl.language_id = l.language_id \r\n "
+					+ " join countries c on cl.country_id = c.country_id \r\n "
+					+ " join country_stats cs on c.country_id = cs.country_id \r\n "
+					+ " where c.name like ? "
+					+ " and c.country_id = ? ";
+			
+			PreparedStatement ps2 = con.prepareStatement(query2);
+			ps2.setString(1, "%" + filterQuery + "%");
+			ps2.setInt(2, idSearch);
+			ResultSet rs2 = ps2.executeQuery();
+			
+			while(rs2.next()) {
+				
+				
+				String country = rs2.getString("name");
+				String language = rs2.getString("language");
+				
+				System.out.println("country: " + country);
+				System.out.println("language: " + language);
 				
 				System.out.println("\n------------------------------\n");
 			}
