@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Scanner;
+
 
 public class Main {
 	public static void main(String[] args) {
@@ -12,13 +14,21 @@ public class Main {
 		final String user = "root";
 		final String password = "root";
 		
+		Scanner sc = null;
 		try (Connection con = DriverManager.getConnection(url, user, password)) {
+			sc = new Scanner(System.in);
+			
+			System.out.println("digit a filter: ");
+			String filterQuery = sc.nextLine();	
 			
 			final String query = " select c.name, c.country_id, c.region_id, c.country_code2 \n "
-							   + " from countries c "
-							   + " order by c.name asc ";
+							   + " from countries c \n "
+							   + " where c.name like ? "  
+							   + " order by c.name ";
+			
 			
 			PreparedStatement ps = con.prepareStatement(query);
+			ps.setString(1, "%" + filterQuery + "%");
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
@@ -40,6 +50,9 @@ public class Main {
 		} catch (Exception e) {
 			
 			System.out.println("Errore di connessione: " + e.getMessage());
+		}finally {
+			if(sc != null)
+				sc.close();
 		}
 		
 		System.out.println("\n----------------------------------\n");
