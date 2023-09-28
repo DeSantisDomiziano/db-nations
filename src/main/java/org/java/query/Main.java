@@ -1,5 +1,6 @@
 package org.java.query;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -49,13 +50,14 @@ public class Main {
 			System.out.println("digit an id: ");
 			int idSearch = Integer.valueOf(sc.nextLine());	
 			
-			String query2 = " select distinct c.name, l.`language` \r\n "
+			String query2 = " select distinct c.name, l.`language`, cs.`year` , cs.population, cs.gdp \r\n "
 					+ " from country_languages cl \r\n "
 					+ " join languages l on cl.language_id = l.language_id \r\n "
 					+ " join countries c on cl.country_id = c.country_id \r\n "
 					+ " join country_stats cs on c.country_id = cs.country_id \r\n "
 					+ " where c.name like ? "
-					+ " and c.country_id = ? ";
+					+ " and c.country_id = ? "
+					+ " and cs.`year` > 2017";
 			
 			PreparedStatement ps2 = con.prepareStatement(query2);
 			ps2.setString(1, "%" + filterQuery + "%");
@@ -67,9 +69,15 @@ public class Main {
 				
 				String country = rs2.getString("name");
 				String language = rs2.getString("language");
+				int year = rs2.getInt(3);
+				int population = rs2.getInt(4);
+				long gdp = rs2.getLong(5);
 				
 				System.out.println("country: " + country);
 				System.out.println("language: " + language);
+				System.out.println("year: " + year);
+				System.out.println("population: " + population);
+				System.out.println("gdp: " + gdp);
 				
 				System.out.println("\n------------------------------\n");
 			}
